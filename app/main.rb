@@ -1,85 +1,56 @@
-def tick args
-  args.state.logo_rect ||= { x: 576,
-                             y: 200,
-                             w: 128,
-                             h: 101 }
-
-  args.outputs.labels  << { x: 640,
-                            y: 600,
-                            text: 'Hello World!',
-                            size_px: 30,
-                            anchor_x: 0.5,
-                            anchor_y: 0.5 }
-
-  args.outputs.labels  << { x: 640,
-                            y: 510,
-                            text: "Documentation is located under the ./docs directory. 150+ samples are located under the ./samples directory.",
-                            size_px: 20,
-                            anchor_x: 0.5,
-                            anchor_y: 0.5 }
-
-  args.outputs.labels  << { x: 640,
-                            y: 480,
-                            text: "You can also access these docs online at docs.dragonruby.org.",
-                            size_px: 20,
-                            anchor_x: 0.5,
-                            anchor_y: 0.5 }
-
-  args.outputs.labels  << { x: 640,
-                            y: 400,
-                            text: "The code that powers what you're seeing right now is located at ./mygame/app/main.rb.",
-                            size_px: 20,
-                            anchor_x: 0.5,
-                            anchor_y: 0.5 }
-
-  args.outputs.labels  << { x: 640,
-                            y: 380,
-                            text: "(you can change the code while the app is running and see the updates live)",
-                            size_px: 20,
-                            anchor_x: 0.5,
-                            anchor_y: 0.5 }
-
-  args.outputs.sprites << { x: args.state.logo_rect.x,
-                            y: args.state.logo_rect.y,
-                            w: args.state.logo_rect.w,
-                            h: args.state.logo_rect.h,
-                            path: 'dragonruby.png',
-                            angle: Kernel.tick_count }
-
-  args.outputs.labels  << { x: 640,
-                            y: 180,
-                            text: "(use arrow keys to move the logo around)",
-                            size_px: 20,
-                            anchor_x: 0.5,
-                            anchor_y: 0.5 }
-
-  args.outputs.labels  << { x: 640,
-                            y: 80,
-                            text: 'Join the Discord Server! https://discord.dragonruby.org',
-                            size_px: 30,
-                            anchor_x: 0.5 }
-
-  if args.inputs.keyboard.left
-    args.state.logo_rect.x -= 10
-  elsif args.inputs.keyboard.right
-    args.state.logo_rect.x += 10
-  end
-
-  if args.inputs.keyboard.down
-    args.state.logo_rect.y -= 10
-  elsif args.inputs.keyboard.up
-    args.state.logo_rect.y += 10
-  end
-
-  if args.state.logo_rect.x > 1280
-    args.state.logo_rect.x = 0
-  elsif args.state.logo_rect.x < 0
-    args.state.logo_rect.x = 1280
-  end
-
-  if args.state.logo_rect.y > 720
-    args.state.logo_rect.y = 0
-  elsif args.state.logo_rect.y < 0
-    args.state.logo_rect.y = 720
-  end
+def init args
+  args.state.falling = []
+  args.state.landed = []
+  args.state.heights = Array.new(1280,0)
 end
+
+def calc_physics args
+  args.state.falling.each do |b|
+    b.y -= b.vy
+    b.x += b.vx
+    if b.x < 0 or b.x > 1280
+      b.x = b.x.clamp(0,1280)
+      b.vx = -b.vx
+    end
+    if args.state.heights[b.x...b.x+b.w].any?{|h| b.y <= h}
+      b.vy = 0
+      args.state.landed << b
+      args.state.heights[b.x...b.x+b.w].each_with_index do |h,i|
+        args.state.heights[i+b.x] += b.h
+      end
+    end
+  end
+  args.state.falling.reject!{|f| f.vy <= 0}
+end
+
+def add_block args
+  args.state.falling << {
+    x: rand(1280), y: rand(50) + 670, w: 8, h: 8,
+    path: "sprites/circle/blue.png",
+    vy: 1, vx: [-1,-0.5,-0.25,-0.1,0,0.1,0.25,0.5,1].sample()
+    }
+end
+
+def tick args
+  if args.tick_count == 0
+    init(args)
+    add_block(args)
+  end
+
+  if args.inputs.keyboard.space or args.inputs.mouse.button_left
+    add_block(args)
+  end
+
+  if args.inputs.keyboard.c
+    puts args.state.falling.size
+    puts args.state.landed.size
+  end
+
+  calc_physics(args)
+
+  args.outputs.primitives << args.state.landed
+
+  args.outputs.primitives << args.state.falling
+
+end
+
