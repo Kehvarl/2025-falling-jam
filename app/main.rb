@@ -10,6 +10,15 @@ def calc_physics args
       b.x = b.x.clamp(0,720)
       b.vx = -b.vx
     end
+    if b.y <= 0
+      b.y = 0
+      b.vy = 0
+      b.vx = 0
+    end
+    args.geometry.find_all_intersect_rect(b, args.state.blocks).each do |c|
+      b.vy = c.vy
+      b.vx = 0
+    end
   end
 end
 
@@ -17,7 +26,7 @@ def add_block args
   args.state.blocks << {
     x: rand(18)*40, y: (rand(2) + 30)*40, w: 40, h: 40,
     path: "sprites/circle/blue.png",
-    vy: 1, vx: 0
+    vy: 40, vx: 0
     }
 end
 
