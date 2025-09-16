@@ -1,32 +1,33 @@
 def init args
-  args.state.blocks = []
+  args.state.falling = []
+  args.state.landed = []
+  args.state.heights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 end
 
 def calc_physics args
-  args.state.blocks.each do |b|
+  args.state.falling.each do |b|
     b.y -= b.vy
     b.x += b.vx
     if b.x < 0 or b.x > 720
       b.x = b.x.clamp(0,720)
       b.vx = -b.vx
     end
-    if b.y <= 0
-      b.y = 0
+    if b.y <= args.state.heights[b.x/40]
+      b.y = args.state.heights[b.x/40].clone
       b.vy = 0
       b.vx = 0
-    end
-    args.geometry.find_all_intersect_rect(b, args.state.blocks).each do |c|
-      b.vy = c.vy
-      b.vx = 0
+      args.state.heights[b.x/40] += 40
+      args.state.landed << b
     end
   end
+  args.state.falling = args.state.falling.select{|b| b.vy > 0}
 end
 
 def add_block args
-  args.state.blocks << {
+  args.state.falling << {
     x: rand(18)*40, y: (rand(2) + 30)*40, w: 40, h: 40,
     path: "sprites/circle/blue.png",
-    vy: 40, vx: 0
+    vy: 10, vx: 0
     }
 end
 
@@ -42,8 +43,7 @@ def tick args
 
   calc_physics(args)
 
-  args.outputs.primitives << args.state.blocks
-
-
+  args.outputs.primitives << args.state.falling
+  args.outputs.primitives << args.state.landed
 end
 

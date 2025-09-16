@@ -1,9 +1,5 @@
-* EXCEPTION:
-* ERROR:
-Undefined method blocks for main.
-
-
+* EXCEPTION: comparison of Integer with NilClass failed
 ** Backtrace:
-*** app/main.rb:18:in calc_physics
-*** app/main.rb:6:in calc_physics
-*** app/main.rb:43:in tick
+*** app/main.rb:15:in calc_physics
+*** app/main.rb:8:in calc_physics
+*** app/main.rb:42:in tick
