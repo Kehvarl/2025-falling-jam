@@ -1,6 +1,10 @@
 def init args
   args.state.falling = []
   args.state.landed = []
+  args.state.dropper = {
+    x: 360, y: 1250, w: 40, h: 20,
+    path: "sprites/square/green.png",
+  }
   args.state.heights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 end
 
@@ -23,9 +27,11 @@ def calc_physics args
   args.state.falling = args.state.falling.select{|b| b.vy > 0}
 end
 
+
+
 def add_block args
   args.state.falling << {
-    x: rand(18)*40, y: (rand(2) + 30)*40, w: 40, h: 40,
+    x: args.state.dropper.x, y: 1210, w: 40, h: 40,
     path: "sprites/circle/blue.png",
     vy: 10, vx: 0
     }
@@ -36,6 +42,12 @@ def tick args
     init(args)
     add_block(args)
   end
+  if args.inputs.keyboard.left
+    args.state.dropper.x -= 40
+  elsif args.inputs.keyboard.right
+    args.state.dropper.x += 40
+  end
+  args.state.dropper.x = args.state.dropper.x.clamp(0,680)
 
   if args.inputs.keyboard.space or args.inputs.mouse.button_left
     add_block(args)
@@ -43,6 +55,7 @@ def tick args
 
   calc_physics(args)
 
+  args.outputs.primitives << args.state.dropper
   args.outputs.primitives << args.state.falling
   args.outputs.primitives << args.state.landed
 end
