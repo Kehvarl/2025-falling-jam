@@ -1,5 +1,5 @@
 * EXCEPTION: comparison of Integer with NilClass failed
 ** Backtrace:
-*** app/main.rb:19:in calc_physics
-*** app/main.rb:12:in calc_physics
-*** app/main.rb:56:in tick
+*** app/main.rb:20:in calc_physics
+*** app/main.rb:13:in calc_physics
+*** app/main.rb:60:in tick
