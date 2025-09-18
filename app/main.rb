@@ -6,6 +6,7 @@ def init args
     path: "sprites/square/green.png",
   }
   args.state.heights = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+  args.state.drop_counter = 45
 end
 
 def calc_physics args
@@ -42,16 +43,20 @@ def tick args
     init(args)
     add_block(args)
   end
-  if args.inputs.keyboard.left
+  args.state.drop_counter -=1
+
+  if args.inputs.keyboard.key_down.left
     args.state.dropper.x -= 40
-  elsif args.inputs.keyboard.right
+  elsif args.inputs.keyboard.key_down.right
     args.state.dropper.x += 40
   end
-  args.state.dropper.x = args.state.dropper.x.clamp(0,680)
 
-  if args.inputs.keyboard.space or args.inputs.mouse.button_left
+  if args.state.drop_counter <= 0 and (args.inputs.keyboard.space or args.inputs.mouse.button_left)
     add_block(args)
+    args.state.drop_counter = 45
   end
+
+  args.state.dropper.x = args.state.dropper.x.clamp(0,680)
 
   calc_physics(args)
 
