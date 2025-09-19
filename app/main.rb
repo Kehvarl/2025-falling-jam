@@ -28,6 +28,12 @@ def calc_physics args
   args.state.falling = args.state.falling.select{|b| b.vy > 0}
 end
 
+def check_block args, b
+  # Block is different color from block below, else destroy both
+  # All touching blocks in row are same color, else destroy all
+  # Each row is shorter than the below row, else cannot win
+  # Tallest possible:  15
+end
 
 
 def add_block args
