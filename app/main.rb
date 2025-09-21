@@ -8,7 +8,7 @@ end
 
 def add_block args
     x = args.state.dropper.x
-    y = 1210
+    y = 1230
     args.state.cats[[x,y]] = {
         x: x, y: y, w: 40, h: 40,
         path: "sprites/circle/blue.png",
@@ -41,6 +41,7 @@ def process_inputs args
     elsif args.inputs.keyboard.left
         args.state.dropper.x -= 40
     end
+    args.state.dropper.x = args.state.dropper.x.clamp(0,680)
     if args.inputs.keyboard.space
         add_block(args)
     end
