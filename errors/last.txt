@@ -1,9 +1,20 @@
 * EXCEPTION:
-* ERROR:
-Undefined method args for main. Did you forget to pass in args as a parameter?
+* ERROR - :as_hash method missing on ~Array~.
 
+#+begin_src ~Array#inspect~
+[17.0, 30]
+#+end_src ~Array#inspect~
 
+** Did you mean?
+Here's a list of methods that kind of look like :as_hash.
+*** :hash
+
+The method named
+  :as_hash
+doesn't exist on [Array, #<Class:#<Array:0x2866dc00>>, Enumerable].
+
+(suggestions above)
 ** Backtrace:
-*** app/main.rb:11:in set_dropper
-*** app/main.rb:71:in process_inputs
-*** app/main.rb:87:in tick
+*** app/main.rb:53:in check_rules
+*** app/main.rb:44:in check_rules
+*** app/main.rb:90:in tick

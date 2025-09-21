@@ -40,6 +40,7 @@ end
 
 def check_rules args
     # Landed cat on cat of same color teleports both away
+    to_remove = []
     args.state.cats.keys.sort_by { |k| k[1] }.each do |key|
         x,y = key
         cat = args.state.cats[key]
@@ -49,24 +50,24 @@ def check_rules args
             if args.state.cats.has_key?([x,y-1])
                 c2 = args.state.cats[[x,y-1]]
                 if c2.color == cat.color
-                    c2.to_remove = true
-                    cat.to_remove = true
+                    to_remove << [x,y]
+                    to_remove << [x,y-1]
                 end
             end
         end
-        args.state.cats = args.state.cats.select{|c| c[1].to_remove == false}
-    # Landed cat adjacent to different color teleports both away
     end
+    to_remove.uniq.each {|c| args.state.cats.delete(c)}
+    # Landed cat adjacent to different color teleports both away
 end
 
 def process_inputs args
-    if args.inputs.keyboard.right
+    if args.inputs.keyboard.key_down.right
         args.state.dropper.x += 40
-    elsif args.inputs.keyboard.left
+    elsif args.inputs.keyboard.key_down.left
         args.state.dropper.x -= 40
     end
     args.state.dropper.x = args.state.dropper.x.clamp(0,680)
-    if args.inputs.keyboard.space
+    if args.inputs.keyboard.key_down.space
         add_block(args, args.state.dropper.color)
         set_dropper(args, ["red", "blue", "green", "white"].sample())
     end
