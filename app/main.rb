@@ -13,11 +13,12 @@ def set_dropper args, color
 end
 
 def add_block args, color="blue"
-    x = args.state.dropper.x/40
+    x = args.state.dropper.x.div(40).to_int
     y = 31
     args.state.cats[[x,y]] = {
         x: x*40, y: y*40, w: 40, h: 40,
         path: "sprites/circle/#{color}.png",
+        moved: true,
         vy: 10, vx: 0, to_remove: false, color: color
     }
 end
@@ -29,9 +30,11 @@ def calculate_physics args
         cat = args.state.cats[key]
         if not new_grid.has_key?([x,y-1])
             y = [y-1, 0].max
-            cat.y = y * 40
+            cat.y = (y * 40).to_int
+            cat.moved = true
             new_grid[[x,y]] = cat
         else
+            cat.moved = false
             new_grid[[x,y]] = cat
         end
     end
@@ -56,8 +59,20 @@ def check_rules args
             end
         end
     end
-    to_remove.uniq.each {|c| args.state.cats.delete(c)}
     # Landed cat adjacent to different color teleports both away
+    (0..31).each do |y|
+        (0..15).each do |x|
+            if args.state.cats.has_key?([x,y]) and args.state.cats[[x,y]].moved == false
+                cat = args.state.cats[[x,y]]
+                if args.state.cats.has_key?([x+1,y]) and (args.state.cats[[x+1,y]].color != cat.color)
+                    to_remove << [x,y]
+                    to_remove << [x+1,y]
+                end
+            end
+        end
+    end
+
+    to_remove.uniq.each {|c| args.state.cats.delete(c)}
 end
 
 def process_inputs args
