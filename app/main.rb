@@ -28,7 +28,7 @@ def calculate_physics args
     args.state.cats.keys.sort_by { |k| k[1] }.each do |key|
         x,y = key
         cat = args.state.cats[key]
-        if not new_grid.has_key?([x,y-1])
+        if (y > 0) and not new_grid.has_key?([x,y-1])
             y = [y-1, 0].max
             cat.y = (y * 40).to_int
             cat.moved = true
@@ -61,13 +61,16 @@ def check_rules args
     end
     # Landed cat adjacent to different color teleports both away
     (0..31).each do |y|
+        deleting = false
         (0..15).each do |x|
-            if args.state.cats.has_key?([x,y]) and args.state.cats[[x,y]].moved == false
+            if args.state.cats.has_key?([x,y]) and not args.state.cats[[x,y]].moved
                 cat = args.state.cats[[x,y]]
-                if args.state.cats.has_key?([x+1,y]) and (args.state.cats[[x+1,y]].color != cat.color)
+                if deleting or (args.state.cats.has_key?([x+1,y]) and (args.state.cats[[x+1,y]].color != cat.color) and not args.state.cats[[x+1,y]].moved)
+                    deleting = true
                     to_remove << [x,y]
-                    to_remove << [x+1,y]
                 end
+            else
+                deleting = false
             end
         end
     end
