@@ -5,6 +5,7 @@ def init args
         color: "green",
         path: "sprites/square/green.png",
     }
+    args.state.falling = nil
 end
 
 def set_dropper args, color
@@ -83,6 +84,13 @@ def process_inputs args
         args.state.dropper.x += 40
     elsif args.inputs.keyboard.key_down.left
         args.state.dropper.x -= 40
+    end
+    if args.inputs.keyboard.key_down.up
+        if args.state.falling
+            c = ["red", "blue", "green", "white"].sample()
+            args.state.falling.color = c
+            args.state.falling.path = "sprites/circle/#{c}.png"
+        end
     end
     args.state.dropper.x = args.state.dropper.x.clamp(0,680)
     if args.inputs.keyboard.key_down.space
