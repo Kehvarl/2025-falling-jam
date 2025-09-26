@@ -1,19 +1,8 @@
 * EXCEPTION:
-* ERROR - :moved method missing on ~NilClass~.
-
-#+begin_src ~NilClass#inspect~
-nil
-#+end_src ~NilClass#inspect~
+* ERROR:
+Undefined method color for main.
 
 
-
-The method named
-  :moved
-doesn't exist on [NilClass, NilClassFalseClass].
-
-(suggestions above)
 ** Backtrace:
-*** app/main.rb:68:in check_rules
-*** app/main.rb:65:in check_rules
-*** app/main.rb:63:in check_rules
-*** app/main.rb:108:in tick
+*** app/main.rb:100:in process_inputs
+*** app/main.rb:122:in tick

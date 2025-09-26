@@ -83,6 +83,7 @@ def check_rules args
     to_remove.uniq.each {|c| args.state.cats.delete(c)}
 end
 
+
 def process_inputs args
     if args.inputs.keyboard.key_down.right
         args.state.dropper.x += 40
@@ -90,10 +91,13 @@ def process_inputs args
         args.state.dropper.x -= 40
     end
     if args.inputs.keyboard.key_down.up
+        colors = ["red", "blue", "green", "white"]
         if args.state.falling
-            c = ["red", "blue", "green", "white"].sample()
+            i = colors.index(args.state.falling.color)
+            c = colors[(i + 1) % colors.length]
             args.state.falling.color = c
             args.state.falling.path = "sprites/circle/#{c}.png"
+            set_dropper(args, c)
         end
     end
     args.state.dropper.x = args.state.dropper.x.clamp(0,680)
