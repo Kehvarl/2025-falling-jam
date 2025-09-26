@@ -16,12 +16,13 @@ end
 def add_block args, color="blue"
     x = args.state.dropper.x.div(40).to_int
     y = 31
-    args.state.cats[[x,y]] = {
+    args.state.falling = {
         x: x*40, y: y*40, w: 40, h: 40,
         path: "sprites/circle/#{color}.png",
         moved: true,
         vy: 10, vx: 0, to_remove: false, color: color
     }
+    args.state.cats[[x,y]] = args.state.falling
 end
 
 def calculate_physics args
@@ -35,6 +36,9 @@ def calculate_physics args
             cat.moved = true
             new_grid[[x,y]] = cat
         else
+            if cat == args.state.falling
+                args.state.falling = nil
+            end
             cat.moved = false
             new_grid[[x,y]] = cat
         end
