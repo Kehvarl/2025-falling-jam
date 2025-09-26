@@ -16,12 +16,13 @@ end
 def add_block args, color="blue"
     x = args.state.dropper.x.div(40).to_int
     y = 31
-    args.state.cats[[x,y]] = {
+    args.state.falling = {
         x: x*40, y: y*40, w: 40, h: 40,
         path: "sprites/circle/#{color}.png",
         moved: true,
         vy: 10, vx: 0, to_remove: false, color: color
     }
+    args.state.cats[[x,y]] = args.state.falling
 end
 
 def calculate_physics args
@@ -35,6 +36,9 @@ def calculate_physics args
             cat.moved = true
             new_grid[[x,y]] = cat
         else
+            if cat == args.state.falling
+                args.state.falling = nil
+            end
             cat.moved = false
             new_grid[[x,y]] = cat
         end
@@ -79,6 +83,7 @@ def check_rules args
     to_remove.uniq.each {|c| args.state.cats.delete(c)}
 end
 
+
 def process_inputs args
     if args.inputs.keyboard.key_down.right
         args.state.dropper.x += 40
@@ -86,10 +91,13 @@ def process_inputs args
         args.state.dropper.x -= 40
     end
     if args.inputs.keyboard.key_down.up
+        colors = ["red", "blue", "green", "white"]
         if args.state.falling
-            c = ["red", "blue", "green", "white"].sample()
+            i = colors.index(args.state.falling.color)
+            c = colors[(i + 1) % colors.length]
             args.state.falling.color = c
             args.state.falling.path = "sprites/circle/#{c}.png"
+            set_dropper(args, c)
         end
     end
     args.state.dropper.x = args.state.dropper.x.clamp(0,680)
