@@ -26,6 +26,7 @@ def add_block args, color="blue"
 end
 
 def calculate_physics args
+    # drop all that can drop
     new_grid = {}
     args.state.cats.keys.sort_by { |k| k[1] }.each do |key|
         x,y = key
