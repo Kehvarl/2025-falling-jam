@@ -86,6 +86,8 @@ end
 
 
 def process_inputs args
+    # Move the dropper, or the dropped?
+    # Drop and forget, or Tetris style?
     if args.inputs.keyboard.key_down.right
         args.state.dropper.x += 40
     elsif args.inputs.keyboard.key_down.left
@@ -98,7 +100,6 @@ def process_inputs args
             c = colors[(i + 1) % colors.length]
             args.state.falling.color = c
             args.state.falling.path = "sprites/circle/#{c}.png"
-            set_dropper(args, c)
         end
     end
     args.state.dropper.x = args.state.dropper.x.clamp(0,680)
