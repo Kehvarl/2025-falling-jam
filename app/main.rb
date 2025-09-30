@@ -88,19 +88,28 @@ end
 def process_inputs args
     # Move the dropper, or the dropped?
     # Drop and forget, or Tetris style?
+    x,y = args.state.cats.key(args.state.falling)
+    nx = x
     if args.inputs.keyboard.key_down.right
         if args.state.falling
             args.state.falling.x += 40
+            nx += 1
         else
             args.state.dropper.x += 40
         end
     elsif args.inputs.keyboard.key_down.left
         if args.state.falling
             args.state.falling.x -= 40
+            nx -= 1
         else
             args.state.dropper.x -= 40
         end
     end
+    if args.state.falling
+        args.state.cats.delete([x,y])
+        args.state.cats[[nx,y]] = args.state.falling
+    end
+
     if args.inputs.keyboard.key_down.up
         colors = ["red", "blue", "green", "white"]
         if args.state.falling
