@@ -1,8 +1,4 @@
-* EXCEPTION:
-* ERROR:
-Undefined method color for main.
-
-
+* EXCEPTION: comparison of [0, 0] and [nil, 1] failed
 ** Backtrace:
-*** app/main.rb:100:in process_inputs
-*** app/main.rb:122:in tick
+*** app/main.rb:32:in calculate_physics
+*** app/main.rb:140:in tick
