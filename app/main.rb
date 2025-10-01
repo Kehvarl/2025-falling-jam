@@ -47,6 +47,21 @@ def calculate_physics args
     args.state.cats = new_grid
 end
 
+def check_row y
+    cur = 0
+    start = 0
+    results = []
+    (0..15).each do |x|
+        if args.state.cats.has_key?([x,y])
+            cur += 1
+        else
+            results << [start, cur]
+            cur = 0
+            start = x+1
+        end
+    end
+end
+
 def check_rules args
     # Landed cat on cat of same color teleports both away
     to_remove = []
